@@ -1,0 +1,30 @@
+{
+  "name": "Net::Google::Sheets",
+  "description": "API access to Google Sheets",
+  "version": "0.0.1",
+  "perl": "6.d",
+  "authors": [
+    "librasteve"
+  ],
+  "auth": "zef:librasteve",
+  "depends": [
+	"OAuth2::Client::Google",
+	"JSON::Fast",
+	"HTTP::UserAgent",
+	"URI::Encode"
+  ],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "Net::Google::Sheets": "lib/Net/Google/Sheets.rakumod"
+  },
+  "resources": [],
+  "license": "Artistic-2.0",
+  "tags": [
+    "Net",
+    "Google",
+    "Sheets"
+  ],
+  "api": "1",
+  "source-url": "git://github.com/librasteve/raku-Net-Google-Sheets.git"
+}
