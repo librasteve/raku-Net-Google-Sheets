@@ -22,7 +22,6 @@ my $ua = HTTP::UserAgent.new;
 
 class Session is export {
     has $.token;
-    has $.sheet is rw;
 
     sub reload-token {
 
@@ -98,14 +97,14 @@ class Session is export {
         $token;
     }
 
-    sub check-token( $token ) {
+    method check-token {
         # check token is still valid
 
         my $query = q|mimeType != 'application/vnd.google-apps.folder' and 'root' in parents|;
 
         my $got-check = $ua.get(
             "$drive-base?q={q-enc($query)}",
-            Authorization => "Bearer $token",
+            Authorization => "Bearer {$!token}",
         );
 
         given $got-check.decoded-content {
@@ -119,7 +118,7 @@ class Session is export {
         # persist token in local file
         $!token = $token-file.IO.slurp or say 'no token file, loading oauth permissions';
 
-        if !$!token || !check-token($!token) || $debug {
+        if ! $!token || ! self.check-token || $debug {
             $!token = reload-token
         }
     }
