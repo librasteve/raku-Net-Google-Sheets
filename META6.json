@@ -8,16 +8,14 @@
   ],
   "auth": "zef:librasteve",
   "depends": [
-	"OAuth2::Client::Google",
-	"JSON::Fast",
-	"HTTP::UserAgent",
-	"URI::Encode"
+    "OAuth2::Client::Google",
+    "JSON::Fast",
+    "HTTP::UserAgent",
+    "URI::Encode"
   ],
   "build-depends": [],
   "test-depends": [],
-  "provides": {
-    "Net::Google::Sheets": "lib/Net/Google/Sheets.rakumod"
-  },
+  "provides": {},
   "resources": [],
   "license": "Artistic-2.0",
   "tags": [
