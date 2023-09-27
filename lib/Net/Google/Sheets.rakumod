@@ -97,7 +97,7 @@ class Session is export {
         $token;
     }
 
-    method check-token {
+    submethod check-token {
         # check token is still valid
 
         my $query = q|mimeType != 'application/vnd.google-apps.folder' and 'root' in parents|;
@@ -114,7 +114,7 @@ class Session is export {
         }
     }
 
-    method TWEAK {
+    submethod TWEAK {
         # persist token in local file
         $!token = $token-file.IO.slurp or say 'no token file, loading oauth permissions';
 
@@ -140,13 +140,35 @@ class Sheet is export {
     has $.id;
     has $.range;
 
+    method url {
+        "$sheet-base/{$!id}/values/{$!range}"
+    }
+
     multi method values {
-        my $got-sheet = $ua.get(
-            "$sheet-base/{$!id}/values/{$!range}",
-            Authorization => "Bearer {$.session.token}"
+
+        my $request = HTTP::Request.new(
+            GET => $.url,
+            Authorization => "Bearer {$.session.token}",
         );
 
-        $got-sheet.decoded-content.&from-json<values>;
+        $ua.request($request).decoded-content.&from-json<values>;
+    }
+
+    multi method values( $data ) {
+
+        my %json-hash := {
+            range => $!range,
+            majorDimension => 'ROWS',
+            values => $data,
+        };
+
+        my $request = HTTP::Request.new(
+            PUT => "{$.url}?valueInputOption=USER_ENTERED",
+            Authorization => "Bearer {$.session.token}",
+        );
+
+        $request.add-content( %json-hash.&to-json );
+        $ua.request( $request );
     }
 }
 
