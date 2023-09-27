@@ -18,9 +18,7 @@ constant $sheet-base = 'https://sheets.googleapis.com/v4/spreadsheets';
 constant $creds-file = 'client_id.json';
 constant $token-file = 'token.txt';
 
-sub q-enc($q ) {
-    uri_encode_component($q);
-}
+sub q-enc( $q ) { uri_encode_component($q) }
 
 sub reload-token {
 
@@ -96,25 +94,31 @@ sub reload-token {
     $token;
 }
 
+sub check-token( $token ) {
+    # check token is still valid
+
+    my $ua = HTTP::UserAgent.new;
+
+    my $query = q|mimeType != 'application/vnd.google-apps.folder' and 'root' in parents|;
+
+    my $got-check = $ua.get(
+            "$drive-base?q={q-enc($query)}",
+            Authorization => "Bearer $token",
+            );
+
+    ($got-check.decoded-content ~~ /404/).not;
+}
+
 my $ua = HTTP::UserAgent.new;
-my $query;
 
 # persist token in local file
 my $token = $token-file.IO.slurp or warn 'no token file, loading oauth permissions';
 
-# check token is valid
-$query = q|mimeType != 'application/vnd.google-apps.folder' and 'root' in parents|;
-
-my $got-check = $ua.get(
-    "$drive-base?q={q-enc($query)}",
-    Authorization => "Bearer $token",
-);
-
-if $got-check.decoded-content.&from-json<error> || $debug {
-    $token = reload-token();
+if !$token || !check-token($token) || $debug {
+    $token = reload-token
 }
 
-$query = q|mimeType = 'application/vnd.google-apps.spreadsheet' and 'root' in parents|;
+my $query = q|mimeType = 'application/vnd.google-apps.spreadsheet' and 'root' in parents|;
 
 my $got-drive = $ua.get(
     "$drive-base?q={q-enc($query)}",
