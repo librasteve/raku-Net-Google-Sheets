@@ -13,8 +13,8 @@ my $debug = 0;
 our $drive-base = 'https://www.googleapis.com/drive/v3/files';
 our $sheet-base = 'https://sheets.googleapis.com/v4/spreadsheets';
 
-constant $creds-file = 'client_id.json';
-constant $token-file = 'token.txt';
+constant $creds-file = "$*HOME/.rang-config/client_id.json";
+constant $token-file = "$*HOME/.rang-config/token.txt";
 
 sub q-enc( $q ) { uri_encode_component($q) }
 
@@ -108,7 +108,7 @@ class Session is export {
         );
 
         given $got-check.decoded-content {
-            when /404/                 { False }
+            when /Error/               { False }
             when .&from-json<error>.so { False }
             default                    { True  }
         }

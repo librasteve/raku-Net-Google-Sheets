@@ -1,6 +1,4 @@
-#!/usr/bin/env perl6
-
-use lib '../lib';
+#!/usr/bin/env raku 
 
 use Net::Google::Sheets;
 
@@ -18,5 +16,4 @@ say $vals;
 # put values into Sheet2
 my $sheet2 = Sheet.new(:$session, :$id, range => 'Sheet2');
 $sheet2.values: $vals;
-
 

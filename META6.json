@@ -15,7 +15,9 @@
   ],
   "build-depends": [],
   "test-depends": [],
-  "provides": {},
+  "provides": {
+    "Net::Google::Sheets": "lib/Net/Google/Sheets.rakumod"
+  },
   "resources": [],
   "license": "Artistic-2.0",
   "tags": [
