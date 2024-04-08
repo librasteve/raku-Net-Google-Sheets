@@ -14,7 +14,7 @@ dir (eg. /bin for /bin/synopsis)
 
 ## Synopsis 
 ```raku
-i#!/usr/bin/env perl6
+#!/usr/bin/env perl6
 
 use lib '../lib';
 
@@ -37,4 +37,4 @@ $sheet2.values: $vals;
 ```
 
 ### Copyright
-copyright(c) 2023 Henley Cloud Consulting Ltd.
+copyright(c) 2023-2024 Henley Cloud Consulting Ltd.
