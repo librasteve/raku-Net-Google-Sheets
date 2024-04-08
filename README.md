@@ -14,7 +14,7 @@ dir (eg. /bin for /bin/synopsis)
 
 ## Synopsis 
 ```raku
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 
 use lib '../lib';
 
