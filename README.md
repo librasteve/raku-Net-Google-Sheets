@@ -9,31 +9,28 @@ Simple API access to Google Sheets, using [OAuth2::Client::Google](https://githu
 zef install Net::Google::Sheets 
 ```
 
-Follow the [HOW-TO](https://raku.land/cpan:BDUGGAN/OAuth2::Client::Google#quick-how-to) to make a client_id.json in your script
-dir (eg. /bin for /bin/synopsis)
+Follow the [HOW-TO](https://raku.land/cpan:BDUGGAN/OAuth2::Client::Google#quick-how-to) to make a client_id.json in your script dir (eg. /bin for /bin/synopsis)
 
 ## Synopsis 
 ```raku
 #!/usr/bin/env raku
-
-use lib '../lib';
-
 use Net::Google::Sheets;
 
 my $session = Session.new;
 
 my %sheets = $session.sheets;
-my $id = %sheets<AWS_EC2_Sizes>;
+my $id = %sheets<AWS_EC2_Sizes_test>;
 
 # get values from Sheet1
 my $sheet1 = Sheet.new(:$session, :$id, range => 'Sheet1');
 my $vals = $sheet1.values;
-say $vals;
-#say $vals[1;*];
 
 # put values into Sheet2
 my $sheet2 = Sheet.new(:$session, :$id, range => 'Sheet2');
 $sheet2.values: $vals;
+
+# clear Sheet2
+$sheet2.clear;
 ```
 
 ### Copyright

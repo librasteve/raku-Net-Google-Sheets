@@ -1,4 +1,4 @@
-unit module Net::Google::Sheets:ver<0.0.1>:auth<Steve Roe (librasteve@furnival.net)>;
+unit module Net::Google::Sheets:ver<0.0.2>:auth<Steve Roe (librasteve@furnival.net)>;
 
 use OAuth2::Client::Google;
 use JSON::Fast;
@@ -10,11 +10,11 @@ use URI::Encode;
 
 my $debug = 0;
 
-our $drive-base = 'https://www.googleapis.com/drive/v3/files';
-our $sheet-base = 'https://sheets.googleapis.com/v4/spreadsheets';
+my $drive-base = 'https://www.googleapis.com/drive/v3/files';
+my $sheet-base = 'https://sheets.googleapis.com/v4/spreadsheets';
 
-constant $creds-file = "$*HOME/.rang-config/client_id.json";
-constant $token-file = "$*HOME/.rang-config/token.txt";
+my $creds-file = "$*HOME/.rang-config/client_id.json";
+my $token-file = "$*HOME/.rang-config/token.txt";
 
 sub q-enc( $q ) { uri_encode_component($q) }
 
@@ -97,7 +97,7 @@ class Session is export {
         $token;
     }
 
-    submethod check-token {
+    method check-token {
         # check token is still valid
 
         my $query = q|mimeType != 'application/vnd.google-apps.folder' and 'root' in parents|;
@@ -169,6 +169,22 @@ class Sheet is export {
 
         $request.add-content( %json-hash.&to-json );
         $ua.request( $request );
+    }
+
+    method shape {
+        my $v = $.values;
+
+        my \R = $v.elems;
+        my \C = $v.first.elems;
+
+        [R,C]
+    }
+
+    method clear {
+        my (\R, \C) = |$.shape;
+        my $empty = [["" xx C] xx R ];
+
+        $.values: $empty;
     }
 }
 
