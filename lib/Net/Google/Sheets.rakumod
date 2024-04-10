@@ -1,4 +1,4 @@
-unit module Net::Google::Sheets:ver<0.0.2>:auth<Steve Roe (librasteve@furnival.net)>;
+unit module Net::Google::Sheets:ver<0.0.3>:auth<Steve Roe (librasteve@furnival.net)>;
 
 use OAuth2::Client::Google;
 use JSON::Fast;
@@ -151,7 +151,7 @@ class Sheet is export {
             Authorization => "Bearer {$.session.token}",
         );
 
-        $ua.request($request).decoded-content.&from-json<values>;
+        $ua.request($request).decoded-content.&from-json<values>.Array;
     }
 
     multi method values( $data ) {
