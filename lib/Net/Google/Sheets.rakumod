@@ -4,6 +4,7 @@ use OAuth2::Client::Google;
 use JSON::Fast;
 use HTTP::UserAgent;
 use URI::Encode;
+use URI;
 
 #viz. https://developers.google.com/drive
 #viz. https://developers.google.com/sheets
@@ -11,7 +12,8 @@ use URI::Encode;
 my $debug = 0;
 
 my $drive-base = 'https://www.googleapis.com/drive/v3/files';
-my $sheet-base = 'https://sheets.googleapis.com/v4/spreadsheets';
+my $sheet-url = 'https://sheets.googleapis.com';
+my $sheet-path = '/v4/spreadsheets';
 
 my $creds-file = "$*HOME/.rang-config/client_id.json";
 my $token-file = "$*HOME/.rang-config/token.txt";
@@ -141,13 +143,28 @@ class Sheet is export {
     has $.range;
 
     method url {
-        "$sheet-base/{$!id}/values/{$!range}"
+        "$sheet-url/$sheet-path/{$!id}/values/{$!range}"
+    }
+
+    method uri( :$cmd ) {
+        my $uri = URI.new: $sheet-url;
+        say $uri;
+
+        my $path = "$sheet-path/{$!id}/values/{$!range}";
+        say $path;
+
+        $path ~= ":$cmd" if $cmd;
+        $uri.path: ~$path;
+
+        say $uri;
+
     }
 
     multi method values {
 
         my $request = HTTP::Request.new(
             GET => $.url,
+#            GET => $.uri,
             Authorization => "Bearer {$.session.token}",
         );
 
@@ -180,11 +197,30 @@ class Sheet is export {
         [R,C]
     }
 
-    method clear {
-        my (\R, \C) = |$.shape;
-        my $empty = [["" xx C] xx R ];
+#    method clear {
+#        my (\R, \C) = |$.shape;
+#        my $empty = [["" xx C] xx R ];
+#
+#        $.values: $empty;
+#    }
 
-        $.values: $empty;
+    method clear {
+
+        my $uri = URI.new: 'https://sheets.googleapis.com';    #iamerejh = works!
+        $uri.path: "/v4/spreadsheets/{$!id}/values/{$!range}:clear";
+
+        my $cmd = 'clear';
+
+        my $request = HTTP::Request.new(
+#            POST => $.uri( :$cmd ),   #iamerejh = fails
+            POST => $uri,
+            Authorization => "Bearer {$.session.token}",
+            Content-length => 0,
+        );
+
+        say $request.uri;
+
+        $ua.request($request).decoded-content.&from-json;
     }
 }
 

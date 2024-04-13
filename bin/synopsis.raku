@@ -16,7 +16,7 @@ dd @vals;
 
 # put values into Sheet2
 my $sheet2 = Sheet.new(:$session, :$id, range => 'Sheet2');
-$sheet2.values: $vals;
+#$sheet2.values: $vals;
 
 # clear Sheet2
 $sheet2.clear;
