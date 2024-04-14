@@ -1,4 +1,4 @@
-unit module Net::Google::Sheets:ver<0.0.3>:auth<Steve Roe (librasteve@furnival.net)>;
+unit module Net::Google::Sheets:ver<0.0.4>:auth<Steve Roe (librasteve@furnival.net)>;
 
 use OAuth2::Client::Google;
 use JSON::Fast;
@@ -8,6 +8,7 @@ use URI;
 
 #viz. https://developers.google.com/drive
 #viz. https://developers.google.com/sheets
+#viz. https://stackoverflow.com/questions/78303148/
 
 my $debug = 0;
 
