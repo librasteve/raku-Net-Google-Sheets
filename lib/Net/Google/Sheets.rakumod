@@ -142,29 +142,20 @@ class Sheet is export {
     has $.id;
     has $.range;
 
-    method url {
-        "$sheet-url/$sheet-path/{$!id}/values/{$!range}"
-    }
-
     method uri( :$cmd ) {
         my $uri = URI.new: $sheet-url;
-        say $uri;
 
         my $path = "$sheet-path/{$!id}/values/{$!range}";
-        say $path;
-
         $path ~= ":$cmd" if $cmd;
-        $uri.path: ~$path;
+        $uri.path: $path;
 
-        say $uri;
-
+        $uri;
     }
 
     multi method values {
 
         my $request = HTTP::Request.new(
-            GET => $.url,
-#            GET => $.uri,
+            GET => $.uri,
             Authorization => "Bearer {$.session.token}",
         );
 
@@ -179,8 +170,12 @@ class Sheet is export {
             values => $data,
         };
 
+        my $query = 'valueInputOption=USER_ENTERED';
+        my $uri = $.uri;
+        $uri.query: $query;
+
         my $request = HTTP::Request.new(
-            PUT => "{$.url}?valueInputOption=USER_ENTERED",
+            PUT => $uri,
             Authorization => "Bearer {$.session.token}",
         );
 
@@ -197,28 +192,14 @@ class Sheet is export {
         [R,C]
     }
 
-#    method clear {
-#        my (\R, \C) = |$.shape;
-#        my $empty = [["" xx C] xx R ];
-#
-#        $.values: $empty;
-#    }
-
     method clear {
-
-        my $uri = URI.new: 'https://sheets.googleapis.com';    #iamerejh = works!
-        $uri.path: "/v4/spreadsheets/{$!id}/values/{$!range}:clear";
-
         my $cmd = 'clear';
 
         my $request = HTTP::Request.new(
-#            POST => $.uri( :$cmd ),   #iamerejh = fails
-            POST => $uri,
+            POST => $.uri( :$cmd ),
             Authorization => "Bearer {$.session.token}",
             Content-length => 0,
         );
-
-        say $request.uri;
 
         $ua.request($request).decoded-content.&from-json;
     }
