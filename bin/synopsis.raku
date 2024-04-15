@@ -4,7 +4,7 @@ use Net::Google::Sheets;
 my $session = Session.new;
 
 my %sheets = $session.sheets;
-my $id = %sheets<AWS_EC2_Sizes_test>;
+my $id = %sheets<AWS_EC2_Sizes>;
 
 # get values from Sheet1
 my $sheet1 = Sheet.new(:$session, :$id, range => 'Sheet1');
